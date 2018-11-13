@@ -1,6 +1,7 @@
 #define N 50
 #define ITERATIONS 5
 
+//copy the values from a to b
 void copy(double a[N][N], double b[N][N]){
     for(int i=0; i<N; i++)
         for(int j=0; j<N; j++)
@@ -18,6 +19,8 @@ int main(){
                 for(int k=1; k < 5; k++){
                     if(j+k < N) G1[i][j]+= C[k]*G2[i][j+k];
                     if(j-k >= 0) G1[i][j]+= C[k]*G2[i][j-k];
+                    if(i+k < N) G1[i][j]+= C[k]*G2[i+k][j];
+                    if(i-k >= 0) G1[i][j]+= C[k]*G2[i+k][j];
                 }
             }
         copy(G1,G2);
