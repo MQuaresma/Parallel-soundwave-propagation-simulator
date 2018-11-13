@@ -20,7 +20,7 @@ int main(){
                     if(j+k < N) G1[i][j]+= C[k]*G2[i][j+k];
                     if(j-k >= 0) G1[i][j]+= C[k]*G2[i][j-k];
                     if(i+k < N) G1[i][j]+= C[k]*G2[i+k][j];
-                    if(i-k >= 0) G1[i][j]+= C[k]*G2[i+k][j];
+                    if(i-k >= 0) G1[i][j]+= C[k]*G2[i-k][j];
                 }
             }
         copy(G1,G2);
