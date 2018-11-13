@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O2
+CFLAGS=-O2 -fopenmp
 SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
