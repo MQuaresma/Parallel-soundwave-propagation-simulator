@@ -13,12 +13,13 @@ int main(){
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
         for(int i=1; i<N-1; i++)
-            for(int j=1; j<N-1; j++)
-                G1[i][j]= C[0]*G2[i][j]+
-                          C[1]*G2[i][j+1]+
-                          C[2]*G2[i][j+2]+
-                          C[3]*G2[i][j+3]+
-                          C[4]*G2[i][j+4];
+            for(int j=1; j<N-1; j++){
+                G1[i][j]= C[0]*G2[i][j];
+                for(int k=1; k < 5; k++){
+                    if(j+k < N) G1[i][j]+= C[k]*G2[i][j+k];
+                    if(j-k >= 0) G1[i][j]+= C[k]*G2[i][j-k];
+                }
+            }
         copy(G1,G2);
     }
 
