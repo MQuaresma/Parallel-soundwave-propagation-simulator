@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <omp.h>
+
 #define N 50
 #define ITERATIONS 5
 
 int main(){
-    double C[5], G[2][N][N], start, temp;
+    double C[5], G[2][N][N], start_time, end_time, temp;
     int last_matrix=0;
 
-    start=omp_get_wtime();
+    start_time=omp_get_wtime();
 
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
@@ -26,6 +27,8 @@ int main(){
         last_matrix=!last_matrix;
     }
 
-    printf("%f\n", omp_get_wtime()-start);
+    end_time = omp_get_wtime() - start_time;
+    printf("Execution Time: %f s\n",end_time);
+    
     return 0;
 }
