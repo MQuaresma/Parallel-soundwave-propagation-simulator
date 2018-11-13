@@ -12,9 +12,9 @@ void copy(double a[N][N], double b[N][N]){
 }
 
 int main(){
-    double C[5], G1[N][N], G2[N][N];
+    double C[5], G1[N][N], G2[N][N], start_time, end_time;
     
-    double start_time = omp_get_wtime();
+    start_time = omp_get_wtime();
 
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
@@ -31,7 +31,7 @@ int main(){
         copy(G1,G2);
     }
 
-    double end_time = omp_get_wtime() - start_time;
+    end_time = omp_get_wtime() - start_time;
     printf("Execution Time: %f s\n",end_time);
 
     return 0;
