@@ -1,10 +1,18 @@
 CC=gcc
-CFLAGS=-O2 -fopenmp
+CFLAGS=-O2
 SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
 SEQ=stencil_seq
 OPT1=stencil_seq_opt
+OS:= $(shell uname -s)
+
+
+ifeq ($(OS), Darwin)
+	CFLAGS += -Xpreprocessor -fopenmp -lomp
+else
+	CFLAGS += -fopenmp
+endif
 
 SRC=$(wildcard $(SRC_DIR)/*.c)
 
