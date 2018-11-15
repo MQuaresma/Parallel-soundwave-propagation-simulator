@@ -3,7 +3,7 @@
 #include "auxFunctions.h"
 
 #define N 9
-#define ITERATIONS 5
+#define ITERATIONS 1
 
 //copy the values from a to b
 void copy(double a[N][N], double b[N][N]){
@@ -15,7 +15,6 @@ void copy(double a[N][N], double b[N][N]){
 int main(){
     double C[5], G1[N][N], G2[N][N], start_time, end_time;
     initiateMask(C);
-    initiateMatrix(N,G1);
     initiateMatrix(N,G2);
     
     start_time = omp_get_wtime();

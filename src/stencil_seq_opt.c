@@ -3,14 +3,13 @@
 #include "auxFunctions.h"
 
 #define N 9
-#define ITERATIONS 5
+#define ITERATIONS 1
 
 int main(){
     double C[5], G[2][N][N], start_time, end_time, temp;
     int last_matrix=0;
     initiateMask(C);
     initiateMatrix(N,G[0]);
-    initiateMatrix(N,G[1]);
 
     start_time=omp_get_wtime();
 
