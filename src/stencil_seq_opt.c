@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <omp.h>
+#include "auxFunctions.h"
 
 #define N 50
 #define ITERATIONS 5
@@ -7,6 +8,8 @@
 int main(){
     double C[5], G[2][N][N], start_time, end_time, temp;
     int last_matrix=0;
+    initiateMask(C);
+    initiateMatrix(N,G[0]);
 
     start_time=omp_get_wtime();
 
@@ -21,13 +24,16 @@ int main(){
                     if(i+k < N) temp+= C[k]*G[last_matrix][i+k][j];
                     if(i-k >= 0) temp+= C[k]*G[last_matrix][i-k][j];
                 }
-                G[last_matrix][i][j]=temp;
+                G[!last_matrix][i][j]=temp;
             }
         
         last_matrix=!last_matrix;
     }
-
+    
     end_time = omp_get_wtime() - start_time;
+    
+    printResults(N,G[!last_matrix]);
+
     printf("Execution Time: %f s\n",end_time);
     
     return 0;

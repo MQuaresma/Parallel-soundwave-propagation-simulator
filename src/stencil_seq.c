@@ -1,5 +1,6 @@
 #include <omp.h>
 #include <stdio.h>
+#include "auxFunctions.h"
 
 #define N 50
 #define ITERATIONS 5
@@ -13,6 +14,8 @@ void copy(double a[N][N], double b[N][N]){
 
 int main(){
     double C[5], G1[N][N], G2[N][N], start_time, end_time;
+    initiateMask(C);
+    initiateMatrix(N,G2);
     
     start_time = omp_get_wtime();
 
@@ -32,6 +35,9 @@ int main(){
     }
 
     end_time = omp_get_wtime() - start_time;
+
+    printResults(N,G2);
+
     printf("Execution Time: %f s\n",end_time);
 
     return 0;
