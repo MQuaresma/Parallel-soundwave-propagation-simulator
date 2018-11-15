@@ -10,7 +10,9 @@ void copy(double a[M_SIZE][M_SIZE], double b[M_SIZE][M_SIZE]){
 }
 
 int main(){
-    double c[5], g1[M_SIZE][M_SIZE], g2[M_SIZE][M_SIZE], start_time, end_time;
+    double c[5], start_time, end_time;
+    static double g1[M_SIZE][M_SIZE], g2[M_SIZE][M_SIZE];
+
     initiateMask(c);
     initiateMatrix(M_SIZE,g1);
     initiateMatrix(M_SIZE,g2);

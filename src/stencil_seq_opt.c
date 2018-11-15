@@ -3,8 +3,10 @@
 #include "matrix_utils.h"
 
 int main(){
-    double c[5], g[2][M_SIZE][M_SIZE], start_time, end_time, temp;
+    double c[5], start_time, end_time, temp;
+    static double g[2][M_SIZE][M_SIZE];
     int last_matrix=0;
+
     initiateMask(c);
     initiateMatrix(M_SIZE,g[0]);
     initiateMatrix(M_SIZE,g[1]);
