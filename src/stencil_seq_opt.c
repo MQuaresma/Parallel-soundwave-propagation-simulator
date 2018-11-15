@@ -2,7 +2,7 @@
 #include <omp.h>
 #include "auxFunctions.h"
 
-#define N 9
+#define N 5
 #define ITERATIONS 1
 
 int main(){
@@ -10,6 +10,7 @@ int main(){
     int last_matrix=0;
     initiateMask(C);
     initiateMatrix(N,G[0]);
+    initiateMatrix(N,G[1]);
 
     start_time=omp_get_wtime();
 
