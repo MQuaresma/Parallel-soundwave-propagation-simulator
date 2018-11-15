@@ -36,7 +36,7 @@ int main(){
 
     end_time = omp_get_wtime() - start_time;
 
-    printResults(N,G2);
+    printResults(N,G1);
 
     printf("Execution Time: %f s\n",end_time);
 
