@@ -1,6 +1,8 @@
 **/*.o
 **/*.out
 **/*.pdf
+bin/**
+build/**
 
 
 ## macOS
