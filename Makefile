@@ -1,10 +1,11 @@
 CC=gcc
-CFLAGS=-O2
+CFLAGS=-O2 -std=c99
 SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
 SEQ=stencil_seq
 OPT1=stencil_seq_opt
+PAR1=stencil_par1
 DEPS=matrix_utils
 OS:= $(shell uname -s)
 
@@ -29,11 +30,15 @@ $(BIN_DIR)/$(OPT1): $(SRC_DIR)/$(OPT1).c $(DEPS)
 	$(CC) $(CFLAGS) $(SRC_DIR)/$(OPT1).c $(SRC_DIR)/$(DEPS).c -o $(OPT1)
 	mv $(OPT1) $(BIN_DIR)
 
+$(BIN_DIR)/$(PAR1): $(SRC_DIR)/$(PAR1).c $(DEPS)
+	$(CC) $(CFLAGS) $(SRC_DIR)/$(PAR1).c $(SRC_DIR)/$(DEPS).c -o $(PAR1)
+	mv $(PAR1) $(BIN_DIR)
+
 checkdirs:
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BIN_DIR)
 
-all: checkdirs $(BIN_DIR)/$(SEQ) $(BIN_DIR)/$(OPT1)
+all: checkdirs $(BIN_DIR)/$(SEQ) $(BIN_DIR)/$(OPT1) $(BIN_DIR)/$(PAR1)
 
 clean:
 	rm -rf $(BUILD_DIR)/ $(BIN_DIR)/

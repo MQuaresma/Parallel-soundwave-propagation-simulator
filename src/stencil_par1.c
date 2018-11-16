@@ -12,10 +12,12 @@ int main(){
     initiateMatrix(M_SIZE,g[1]);
 
     start_time=omp_get_wtime();
-
+    
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
+        
         for(int i=1; i<M_SIZE-1; i++)
+            #pragma omp parallel for
             for(int j=1; j<M_SIZE-1; j++){
                 temp= c[0]*g[last_matrix][i][j];
                 for(int k=1; k < 5; k++){
