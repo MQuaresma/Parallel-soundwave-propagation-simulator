@@ -22,45 +22,33 @@ int main(){
             for(int j=1; j<M_SIZE-1; j++){
                 temp=vector1[4]*g[last_matrix][i][j];
                 
-                for(int k=1; k<5; k++){
-                    if(j+k < M_SIZE) vector2[k-1]=g[last_matrix][i][j+k];
-                    else vector2[k-1]=0;
-                }
+                for(int k=1; k<5; k++)
+                    vector2[k-1] = (j+k < M_SIZE ? g[last_matrix][i][j+k] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
-                for(int k=0; k<4; k++){
+                for(int k=0; k<4; k++)
                     temp+=vector1[k]*vector2[k];
-                }
                 
-                for(int k=1; k<5; k++){
-                    if(j-k >=0) vector2[k-1]=g[last_matrix][i][j-k];
-                    else vector2[k-1]=0;
-                }
+                for(int k=1; k<5; k++)
+                    vector2[k-1] = (j-k >= 0 ? g[last_matrix][i][j-k] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
-                for(int k=0; k<4; k++){
+                for(int k=0; k<4; k++)
                     temp+=vector1[k]*vector2[k];
-                }
 
-                for(int k=1; k<5; k++){
-                    if(i+k < M_SIZE) vector2[k-1]=g[last_matrix][i+k][j];
-                    else vector2[k-1]=0;
-                }
+                for(int k=1; k<5; k++)
+                    vector2[k-1] = (i+k < M_SIZE ? g[last_matrix][i+k][j] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
-                for(int k=0; k<4; k++){
+                for(int k=0; k<4; k++)
                     temp+=vector1[k]*vector2[k];
-                }
                 
-                for(int k=1; k<5; k++){
-                    if(i-k >= 0) vector2[k-1]=g[last_matrix][i-k][j];
-                    else vector2[k-1]=0;
-                }
+                for(int k=1; k<5; k++)
+                    vector2[k-1] = (i-k >= 0 ? g[last_matrix][i-k][j] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
-                for(int k=0; k<4; k++){
+                for(int k=0; k<4; k++)
                     temp+=vector1[k]*vector2[k];
-                }
 
                 g[!last_matrix][i][j]=temp;
             }
