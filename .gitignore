@@ -3,6 +3,7 @@
 **/*.pdf
 bin/**
 build/**
+.vscode/**
 
 
 ## macOS
