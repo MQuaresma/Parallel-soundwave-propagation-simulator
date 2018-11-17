@@ -8,12 +8,19 @@
 module load gcc/5.3.0
 #module load gcc/7.2.0
 
+cd PCP/StencilSim
+rm Teste.*
+make clean
 make
 
-export OMP_NUM_THREADS=2
+OMP_NUM_THREADS=2
 
-echo "Sequencial: "
-./bin/stencil_seq_opt
+while [ $OMP_NUM_THREADS -lt 10 ]; do
+	echo "=== #THREADS: " $OMP_NUM_THREADS  " ==="
+	echo "Sequencial: "
+	./bin/stencil_seq_opt
 
-echo "Parallel: "
-./bin/stencil_par1
+	echo "Parallel: "
+	./bin/stencil_par1
+	let OMP_NUM_THREADS=OMP_NUM_THREADS+2
+done
