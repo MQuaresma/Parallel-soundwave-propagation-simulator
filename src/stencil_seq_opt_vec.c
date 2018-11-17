@@ -3,14 +3,14 @@
 #include "matrix_utils.h"
 
 int main(){
-    double c[5], start_time, end_time, temp;
+    double start_time, end_time, temp;
     static double g[2][M_SIZE][M_SIZE];
     int last_matrix=0;
     
-    double vector1[4]  __attribute__((aligned(16)));
+    double vector1[5]  __attribute__((aligned(16)));
     double vector2[4]  __attribute__((aligned(16)));
 
-    initiateMask(c);
+    initiateMask(vector1);
     initiateMatrix(M_SIZE,g[0]);
     initiateMatrix(M_SIZE,g[1]);
 
@@ -20,14 +20,14 @@ int main(){
         //one iteration
         for(int i=1; i<M_SIZE-1; i++)
             for(int j=1; j<M_SIZE-1; j++){
-                temp= c[0]*g[last_matrix][i][j];
+                temp=vector1[4]*g[last_matrix][i][j];
                 
                 for(int k=1; k<5; k++){
-                    vector1[k-1]=c[k];
                     if(j+k < M_SIZE) vector2[k-1]=g[last_matrix][i][j+k];
                     else vector2[k-1]=0;
                 }
 
+                #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++){
                     temp+=vector1[k]*vector2[k];
                 }
@@ -37,6 +37,7 @@ int main(){
                     else vector2[k-1]=0;
                 }
 
+                #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++){
                     temp+=vector1[k]*vector2[k];
                 }
@@ -46,6 +47,7 @@ int main(){
                     else vector2[k-1]=0;
                 }
 
+                #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++){
                     temp+=vector1[k]*vector2[k];
                 }
@@ -55,6 +57,7 @@ int main(){
                     else vector2[k-1]=0;
                 }
 
+                #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++){
                     temp+=vector1[k]*vector2[k];
                 }
