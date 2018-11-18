@@ -10,6 +10,9 @@ int main(){
     double vector1[5]  __attribute__((aligned(16)));
     double vector2[4]  __attribute__((aligned(16)));
 
+    double * restrict vector1p=vector1;
+    double * restrict vector2p=vector2;
+
     initiateMask(vector1);
     initiateMatrix(M_SIZE,g[0]);
     initiateMatrix(M_SIZE,g[1]);
@@ -20,39 +23,38 @@ int main(){
         //one iteration
         for(int i=1; i<M_SIZE-1; i++)
             for(int j=1; j<M_SIZE-1; j++){
-                temp=vector1[4]*g[last_matrix][i][j];
+                temp=vector1p[4]*g[last_matrix][i][j];
                 
                 for(int k=1; k<5; k++)
-                    vector2[k-1] = (j+k < M_SIZE ? g[last_matrix][i][j+k] : 0.f);
+                    vector2p[k-1] = (j+k < M_SIZE ? g[last_matrix][i][j+k] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++)
-                    temp+=vector1[k]*vector2[k];
+                    temp+=vector1p[k]*vector2p[k];
                 
                 for(int k=1; k<5; k++)
-                    vector2[k-1] = (j-k >= 0 ? g[last_matrix][i][j-k] : 0.f);
+                    vector2p[k-1] = (j-k >= 0 ? g[last_matrix][i][j-k] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++)
-                    temp+=vector1[k]*vector2[k];
+                    temp+=vector1p[k]*vector2p[k];
 
                 for(int k=1; k<5; k++)
-                    vector2[k-1] = (i+k < M_SIZE ? g[last_matrix][i+k][j] : 0.f);
+                    vector2p[k-1] = (i+k < M_SIZE ? g[last_matrix][i+k][j] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++)
-                    temp+=vector1[k]*vector2[k];
+                    temp+=vector1p[k]*vector2p[k];
                 
                 for(int k=1; k<5; k++)
-                    vector2[k-1] = (i-k >= 0 ? g[last_matrix][i-k][j] : 0.f);
+                    vector2p[k-1] = (i-k >= 0 ? g[last_matrix][i-k][j] : 0.f);
 
                 #pragma omp simd reduction(+:temp)
                 for(int k=0; k<4; k++)
-                    temp+=vector1[k]*vector2[k];
+                    temp+=vector1p[k]*vector2p[k];
 
                 g[!last_matrix][i][j]=temp;
             }
-        
         last_matrix=!last_matrix;
     }
     
