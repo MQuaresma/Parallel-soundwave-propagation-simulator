@@ -3,7 +3,7 @@
 #include "matrix_utils.h"
 
 int main(){
-    double c[5], start_time, end_time, temp;
+    double c[5], start_time, end_time, temp, sum;
     static double g[2][M_SIZE][M_SIZE];
     int last_matrix=0;
 
@@ -15,15 +15,16 @@ int main(){
     
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
-        #pragma omp parallel for collapse(2) private(temp)
+        #pragma omp parallel for collapse(2) private(temp, sum)
         for(int i=1; i<M_SIZE-1; i++){
             for(int j=1; j<M_SIZE-1; j++){
                 temp= c[0]*g[last_matrix][i][j];
                 for(int k=1; k < 5; k++){
-                    if(j+k < M_SIZE) temp+= c[k]*g[last_matrix][i][j+k];
-                    if(j-k >= 0) temp+= c[k]*g[last_matrix][i][j-k];
-                    if(i+k < M_SIZE) temp+= c[k]*g[last_matrix][i+k][j];
-                    if(i-k >= 0) temp+= c[k]*g[last_matrix][i-k][j];
+                    sum = (j+k < M_SIZE ? g[last_matrix][i][j+k] : 0.f);
+                    sum += (j-k >= 0 ? g[last_matrix][i][j-k] : 0.f);
+                    sum += (i+k < M_SIZE ? g[last_matrix][i+k][j] : 0.f);
+                    sum += (i-k >= 0 ? g[last_matrix][i-k][j]: 0.f);
+                    temp += sum*c[k];
                 }
                 g[!last_matrix][i][j]=temp;
             }
