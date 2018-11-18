@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O2 -std=c99
+CFLAGS=-O3 -std=c99
 SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
