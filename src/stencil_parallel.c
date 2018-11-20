@@ -15,7 +15,7 @@ int main(){
     
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
-        #pragma omp parallel for collapse(2) private(temp, sum)
+        #pragma omp parallel for collapse(2) private(temp)
         for(int i=1; i<M_SIZE-1; i++){
             for(int j=1; j<M_SIZE-1; j++){
                 temp= c[0]*g[last_matrix][i][j];
