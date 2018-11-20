@@ -13,18 +13,33 @@ rm Teste.*
 make clean
 make
 
+mkdir times
+
 NUM=0
-
 while [ $NUM -lt 15 ]; do
-    OMP_NUM_THREADS=2
-	while [ $OMP_NUM_THREADS -lt 17 ]; do
-		echo "=== #THREADS: " $OMP_NUM_THREADS  " ==="
-		echo "Sequencial: "
-		./bin/stencil_seq
+    ./bin/stencil_seq >> times/stencil_seq.txt
+    let NUM=NUM+1
+done
 
-		echo "Parallel: "
-		./bin/stencil_parallel
-		let OMP_NUM_THREADS=OMP_NUM_THREADS+2
-	done
-	let NUM=NUM+1
+NUM=0
+while [ $NUM -lt 15 ]; do
+    ./bin/stencil_seq_temp >> times/stencil_temp.txt
+    let NUM=NUM+1
+done
+
+NUM=0
+while [ $NUM -lt 15 ]; do
+    ./bin/stencil_seq_opt >> times/stencil_opt.txt
+    let NUM=NUM+1
+done
+
+OMP_NUM_THREADS=2
+while [ $OMP_NUM_THREADS -lt 17 ]; do
+    NUM=0
+	while [ $NUM -lt 15 ]; do
+		./bin/stencil_parallel >> times/parallel_res.txt
+        let NUM=NUM+1
+    done
+    echo " "
+	let OMP_NUM_THREADS=OMP_NUM_THREADS*2
 done
