@@ -85,7 +85,7 @@ Uma otimização que poderia ser efetuada seria baseada na propriedade distribut
 uma vez por cada iteração do \textit{loop} \texttt{for(int k=1; k < 5; k++)}. É importante ter em atenção que, dados os cálculos em causa serem efetuados em
 vírgula flutuante, a propriedade distributiva da multiplicação não se verifica dados possíveis erros de arredondamento. Como tal esta otimização não foi considerada.
 
-Outra otimização benéfica seria o uso de instruções \texbf{FMA}(Fused Multiply–Add) disponibilizadas pelo processador para realizar os cálculos ($a = a + (b*c)$) que, para além de poder melhorar o tempo de execução, diminui a possibilidade de divergência dos resultados, visto que em vez de serem realizados dois arredondamentos, é apenas realizado um. Esta otimização não foi considerada dado depender do \textit{hardware} utilizado nos testes.
+Outra otimização benéfica seria o uso de instruções \textbf{FMA}(Fused Multiply–Add) disponibilizadas pelo processador para realizar os cálculos ($a = a + (b*c)$) que, para além de poder melhorar o tempo de execução, diminui a possibilidade de divergência dos resultados, visto que em vez de serem realizados dois arredondamentos, é apenas realizado um. Esta otimização não foi considerada dado depender do \textit{hardware} utilizado nos testes.
 
 Adicionalmente referimos o uso da flag \texttt{-O3} de modo a obter otimizações realizadas pelo compilador.
 
