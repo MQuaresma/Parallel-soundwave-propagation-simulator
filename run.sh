@@ -23,12 +23,6 @@ done
 
 NUM=0
 while [ $NUM -lt 15 ]; do
-    ./bin/stencil_seq_temp >> times/stencil_temp.txt
-    let NUM=NUM+1
-done
-
-NUM=0
-while [ $NUM -lt 15 ]; do
     ./bin/stencil_seq_opt >> times/stencil_opt.txt
     let NUM=NUM+1
 done
