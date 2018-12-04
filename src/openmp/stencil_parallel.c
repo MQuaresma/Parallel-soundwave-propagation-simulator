@@ -4,12 +4,12 @@
 
 int main(){
     double c[5], start_time, end_time, temp;
-    static double g[2][M_SIZE][M_SIZE];
+    static double g[2][PADDED_SIZE][PADDED_SIZE];
     int last_matrix=0;
 
     initiateMask(c);
-    initiateMatrix(M_SIZE,g[0]);
-    initiateMatrix(M_SIZE,g[1]);
+    initiateMatrix(M_SIZE, STENCIL_P, g[0]);
+    initiateMatrix(M_SIZE, STENCIL_P, g[1]);
 
     start_time=omp_get_wtime();
     
@@ -20,10 +20,10 @@ int main(){
             for(int j=1; j<M_SIZE-1; j++){
                 temp= c[0]*g[last_matrix][i][j];
                 for(int k=1; k < 5; k++){
-                    if(j+k < M_SIZE) temp+= c[k]*g[last_matrix][i][j+k];
-                    if(j-k >= 0) temp+= c[k]*g[last_matrix][i][j-k];
-                    if(i+k < M_SIZE) temp+= c[k]*g[last_matrix][i+k][j];
-                    if(i-k >= 0) temp+= c[k]*g[last_matrix][i-k][j];
+                    temp+= c[k]*g[last_matrix][i][j+k];
+                    temp+= c[k]*g[last_matrix][i][j-k];
+                    temp+= c[k]*g[last_matrix][i+k][j];
+                    temp+= c[k]*g[last_matrix][i-k][j];
                 }
                 g[!last_matrix][i][j]=temp;
             }

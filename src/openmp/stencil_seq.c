@@ -3,7 +3,7 @@
 #include "matrix_utils.h"
 
 //copy the values from a to b
-void copy(double a[M_SIZE][M_SIZE], double b[M_SIZE][M_SIZE]){
+void copy(double a[PADDED_SIZE][PADDED_SIZE], double b[PADDED_SIZE][PADDED_SIZE]){
     for(int i=0; i<M_SIZE; i++)
         for(int j=0; j<M_SIZE; j++)
             b[i][j]=a[i][j];
@@ -11,11 +11,11 @@ void copy(double a[M_SIZE][M_SIZE], double b[M_SIZE][M_SIZE]){
 
 int main(){
     double c[5], start_time, end_time;
-    static double g1[M_SIZE][M_SIZE], g2[M_SIZE][M_SIZE];
+    static double g1[PADDED_SIZE][PADDED_SIZE], g2[PADDED_SIZE][PADDED_SIZE];
 
     initiateMask(c);
-    initiateMatrix(M_SIZE,g1);
-    initiateMatrix(M_SIZE,g2);
+    initiateMatrix(M_SIZE, STENCIL_P, g1);
+    initiateMatrix(M_SIZE, STENCIL_P, g2);
     
     start_time = omp_get_wtime();
 
