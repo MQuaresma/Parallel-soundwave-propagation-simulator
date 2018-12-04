@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O3 -std=c99
-SRC_DIR=src/openmp
+SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
 SEQ=stencil_seq
