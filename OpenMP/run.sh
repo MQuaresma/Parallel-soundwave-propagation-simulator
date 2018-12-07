@@ -2,7 +2,7 @@
 #
 #PBS -N Teste
 #PBS -l walltime=10:00
-#PBS -l nodes=1:r641:ppn=16
+#PBS -l nodes=1:r641:ppn=32
 #PBS -q mei
 
 module load gcc/5.3.0
