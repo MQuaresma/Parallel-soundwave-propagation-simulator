@@ -42,7 +42,7 @@ int main(int argc, const char* argv[]){
             
             end_time = omp_get_wtime() - start_time;
             
-            printResults(g[last_matrix]);
+            //printResults(g[last_matrix]);
 
             printf("Execution Time: %f s\n",end_time);
         }else{

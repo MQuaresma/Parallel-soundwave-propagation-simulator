@@ -34,6 +34,5 @@ while [ $OMP_NUM_THREADS -lt 17 ]; do
 		./bin/stencil_parallel $OMP_NUM_THREADS >> times/parallel_res.txt
         let NUM=NUM+1
     done
-    echo " "
 	let OMP_NUM_THREADS=OMP_NUM_THREADS*2
 done
