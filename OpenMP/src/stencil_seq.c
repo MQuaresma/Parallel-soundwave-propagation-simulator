@@ -3,7 +3,7 @@
 #include "matrix_utils.h"
 
 //copy the values from a to b
-void copy(double a[PADDED_SIZE][PADDED_SIZE], double b[PADDED_SIZE][PADDED_SIZE]){
+void copy(double a[M_SIZE][M_SIZE], double b[M_SIZE][M_SIZE]){
     for(int i=0; i<M_SIZE; i++)
         for(int j=0; j<M_SIZE; j++)
             b[i][j]=a[i][j];
@@ -11,18 +11,18 @@ void copy(double a[PADDED_SIZE][PADDED_SIZE], double b[PADDED_SIZE][PADDED_SIZE]
 
 int main(){
     double c[5], start_time, end_time;
-    static double g1[PADDED_SIZE][PADDED_SIZE], g2[PADDED_SIZE][PADDED_SIZE];
+    static double g1[M_SIZE][M_SIZE], g2[M_SIZE][M_SIZE];
 
     initiateMask(c);
-    initiateMatrix(M_SIZE, STENCIL_P, g1);
-    initiateMatrix(M_SIZE, STENCIL_P, g2);
+    initiateMatrixSeq(g1);
+    initiateMatrixSeq(g2);
     
     start_time = omp_get_wtime();
 
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
-        for(int i=1; i<M_SIZE-1; i++)
-            for(int j=1; j<M_SIZE-1; j++){
+        for(int i=0; i<M_SIZE; i++)
+            for(int j=0; j<M_SIZE; j++){
                 g1[i][j]= c[0]*g2[i][j];
                 for(int k=1; k < 5; k++){
                     if(j+k < M_SIZE) g1[i][j]+= c[k]*g2[i][j+k];
@@ -36,7 +36,7 @@ int main(){
 
     end_time = omp_get_wtime() - start_time;
 
-    //printResults(M_SIZE,g1);
+    printResultsSeq(g1);
 
     printf("Execution Time: %f s\n",end_time);
 

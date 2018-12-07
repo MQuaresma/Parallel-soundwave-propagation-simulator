@@ -31,7 +31,7 @@ OMP_NUM_THREADS=2
 while [ $OMP_NUM_THREADS -lt 17 ]; do
     NUM=0
 	while [ $NUM -lt 15 ]; do
-		./bin/stencil_parallel >> times/parallel_res.txt
+		./bin/stencil_parallel $OMP_NUM_THREADS >> times/parallel_res.txt
         let NUM=NUM+1
     done
     echo " "

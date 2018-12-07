@@ -1,8 +1,8 @@
 **/*.o
 **/*.out
 **/*.pdf
-bin/**
-build/**
+**/bin/**
+**/build/**
 .vscode/**
 
 
