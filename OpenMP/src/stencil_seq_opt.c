@@ -4,7 +4,7 @@
 
 int main(){
     double c[5], start_time, end_time, temp;
-    static double g[2][PADDED_SIZE][PADDED_SIZE];
+    static double g[2][M_SIZE][M_SIZE];
     int last_matrix=0;
 
     initiateMask(c);
@@ -15,8 +15,8 @@ int main(){
 
     for(int it=0; it<ITERATIONS; it++){
         //one iteration
-        for(int i=STENCIL_P; i<PADDED_SIZE-STENCIL_P; i++)
-            for(int j=STENCIL_P; j<PADDED_SIZE-STENCIL_P; j++){
+        for(int i=STENCIL_P; i<M_SIZE-STENCIL_P; i++)
+            for(int j=STENCIL_P; j<M_SIZE-STENCIL_P; j++){
                 temp = c[0]*g[last_matrix][i][j];
                 for(int k=1; k < STENCIL_P; k++){
                     temp += g[last_matrix][i][j+k]*c[k];

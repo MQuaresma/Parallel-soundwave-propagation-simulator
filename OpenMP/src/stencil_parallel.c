@@ -11,7 +11,7 @@ int main(int argc, const char* argv[]){
         if(numThreads>0){
 
             double c[5], start_time, end_time, temp;
-            static double g[2][PADDED_SIZE][PADDED_SIZE];
+            static double g[2][M_SIZE][M_SIZE];
             int last_matrix=0;
 
             initiateMask(c);
@@ -25,8 +25,8 @@ int main(int argc, const char* argv[]){
             for(int it=0; it<ITERATIONS; it++){
                 //one iteration
                 #pragma omp parallel for private(temp)
-                for(int i=STENCIL_P; i<PADDED_SIZE-STENCIL_P; i++){
-                    for(int j=STENCIL_P; j<PADDED_SIZE-STENCIL_P; j++){
+                for(int i=STENCIL_P; i<M_SIZE-STENCIL_P; i++){
+                    for(int j=STENCIL_P; j<M_SIZE-STENCIL_P; j++){
                         temp= c[0]*g[last_matrix][i][j];
                         for(int k=1; k < 5; k++){
                             temp+= c[k]*g[last_matrix][i][j+k];
