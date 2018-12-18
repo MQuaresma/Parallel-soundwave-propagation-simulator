@@ -1,34 +1,5 @@
 #include "matrix_utils.h"
 
-void copy(double temp[][M_SIZE], double g[M_SIZE][M_SIZE], int rows, int begin){
-    for(int i=0; i<rows; i++)
-        for(int j=0; j<M_SIZE; j++)
-            g[begin+i][j] = temp[i][j];
-}
-
-void copyTo(double aux[STENCIL_P][M_SIZE], double temp[][M_SIZE], int ext){
-    for(int i=0; i<STENCIL_P; i++){
-        for(int j=0; j<M_SIZE; j++)
-            temp[i+ext][j]=aux[i][j];
-    }
-}
-
-void copyFrom(double aux[STENCIL_P][M_SIZE], double temp[][M_SIZE], int ext){
-    for(int i=0; i<STENCIL_P; i++){
-        for(int j=0; j<M_SIZE; j++)
-            aux[i][j]=temp[i+ext][j];
-    }
-}
-
-void fillToSend(double g[][M_SIZE], double temp[][M_SIZE], int begin, int end){
-    int w=0;
-    for(int i = begin; i < end; i++){
-        for(int j=0; j < M_SIZE; j++)
-            temp[w][j] = g[i][j];
-        w++;
-    }   
-}
-
 int main( int argc, char *argv[]) {
     
     int rank, no_procs, rows_per_proc, remaning_rows, begin, end, last_matrix=0, work_load = M_SIZE - 2*STENCIL_P, excess;
@@ -58,7 +29,7 @@ int main( int argc, char *argv[]) {
         for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end+=rows_per_proc) {
             excess = i <=remaning_rows;
             end += excess;
-            fillToSend(g, temp[0], begin, end);
+            copy(g, begin, temp[0], 0, rows_per_proc+excess+2*STENCIL_P);
             MPI_Send(temp[0], (rows_per_proc+2*STENCIL_P+excess)*M_SIZE, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
         }
         
@@ -66,7 +37,7 @@ int main( int argc, char *argv[]) {
         for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess){
             excess = i <=remaning_rows;
             MPI_Recv( temp[0], (rows_per_proc+excess)*M_SIZE, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &status);
-            copy(temp[0],g,rows_per_proc+excess,begin);
+            copy(temp[0], 0, g, begin, rows_per_proc+excess);
         }
     }else{
         rows_per_proc += excess;
@@ -86,28 +57,28 @@ int main( int argc, char *argv[]) {
 
             last_matrix = !last_matrix;
             if(rank!=1){
-                copyFrom(aux,temp[last_matrix],STENCIL_P);
+                copy(temp[last_matrix], STENCIL_P, aux, 0, STENCIL_P);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
             }
 
             if(rank!=no_procs-1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp[last_matrix],rows_per_proc+STENCIL_P);
+                copy(aux, 0, temp[last_matrix], rows_per_proc+STENCIL_P, STENCIL_P);
             }
 
             if(rank!=no_procs-1){
-                copyFrom(aux,temp[last_matrix],rows_per_proc);
+                copy(temp[last_matrix], rows_per_proc, aux, 0, STENCIL_P);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
             }
 
             if(rank!=1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp[last_matrix],0);
+                copy(aux, 0, temp[last_matrix], 0, STENCIL_P);
             }
         }
         
         double tempToSend[rows_per_proc][M_SIZE];
-        fillToSend(temp[last_matrix], tempToSend, STENCIL_P, rows_per_proc);
+        copy(temp[last_matrix], STENCIL_P, tempToSend, 0, rows_per_proc);
 
         MPI_Send( tempToSend, rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
     }
@@ -116,7 +87,7 @@ int main( int argc, char *argv[]) {
     
     MPI_Finalize();
     
-    if(rank==0) printResults(g);
+    //if(rank==0) printResults(g);
 
     printf("Execution Time: %f s\n",end_time-start_time);
 

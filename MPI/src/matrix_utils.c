@@ -21,3 +21,9 @@ void printResults(double m[M_SIZE][M_SIZE]){
         printf("\n");
     }
 }
+
+void copy(double temp[][M_SIZE], int orig_offset, double g[M_SIZE][M_SIZE], int dest_offset, int rows){
+    for(int i=0; i<rows; i++)
+        for(int j=0; j<M_SIZE; j++)
+            g[i+dest_offset][j] = temp[i+orig_offset][j];
+}
