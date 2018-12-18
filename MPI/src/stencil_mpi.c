@@ -55,25 +55,26 @@ int main( int argc, char *argv[]) {
         begin = 0;
         end = rows_per_proc+2*STENCIL_P;
 
-        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end +=rows_per_proc+excess) {
+        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end +=rows_per_proc) {
             excess = i <=remaning_rows;
             end += excess;
             fillToSend(g, temp[0], begin, end);
             MPI_Send(temp[0], (rows_per_proc+2*STENCIL_P+excess)*M_SIZE, MPI_INT, i, 0, MPI_COMM_WORLD);
         }
-
-        for(int i=1; i<no_procs; i++){
+        
+        begin=STENCIL_P;
+        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess){
             excess = i <=remaning_rows;
-            MPI_Recv( temp[0], (rows_per_proc+excess)*M_SIZE, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status); //TODO: fix
-            copy(temp[0],g,rows_per_proc+excess,i*rows_per_proc);                                                   //TODO: fix start address
+            MPI_Recv( temp[0], (rows_per_proc+excess)*M_SIZE, MPI_INT, i, 1, MPI_COMM_WORLD, &status);
+            copy(temp[0],g,rows_per_proc+excess,begin);
         }
-       }else{
+    }else{
         rows_per_proc += excess;
         MPI_Recv( temp[last_matrix], (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status );
         
         for(int i = 0; i < ITERATIONS; i++){
             for(int j = STENCIL_P; j < rows_per_proc+STENCIL_P; j ++)
-                for(int k = STENCIL_P; k < M_SIZE-STENCIL_P-1; k++){
+                for(int k = STENCIL_P; k < M_SIZE-STENCIL_P; k++){
                     temp[!last_matrix][j][k] = temp[last_matrix][j][k]*c[0];
                     for(int w = 1; w <= STENCIL_P; w ++){
                         temp[!last_matrix][j][k] += temp[last_matrix][j][k+w]*c[w];
@@ -85,23 +86,23 @@ int main( int argc, char *argv[]) {
             last_matrix = !last_matrix;
 
             if(rank!=1){
-                copyFrom(aux,temp[last_matrix],0);
+                copyFrom(aux,temp[last_matrix],STENCIL_P);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_INT, rank-1, 2, MPI_COMM_WORLD);
             }
-            
+
             if(rank!=no_procs-1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_INT, rank+1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp[!last_matrix],rows_per_proc+STENCIL_P);
-            }   
-            
+                copyTo(aux,temp[!last_matrix],rows_per_proc);
+            }
+
             if(rank!=no_procs-1){
-                copyFrom(aux,temp[last_matrix],rows_per_proc+STENCIL_P);
+                copyFrom(aux,temp[last_matrix],rows_per_proc);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_INT, rank+1, 2, MPI_COMM_WORLD);
             }
-            
+
             if(rank!=1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_INT, rank-1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp[!last_matrix],0);
+                copyTo(aux,temp[!last_matrix],STENCIL_P);
             }
         }
         
@@ -114,6 +115,8 @@ int main( int argc, char *argv[]) {
     end_time = MPI_Wtime();
     
     MPI_Finalize();
+    
+    //if(rank==0) printResults(g);
 
     printf("Execution Time: %f s\n",end_time-start_time);
 
