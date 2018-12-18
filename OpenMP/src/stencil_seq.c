@@ -24,7 +24,7 @@ int main(){
         for(int i=STENCIL_P; i<M_SIZE-STENCIL_P; i++)
             for(int j=STENCIL_P; j<M_SIZE-STENCIL_P; j++){
                 g1[i][j]= c[0]*g2[i][j];
-                for(int k=1; k < 5; k++){
+                for(int k=1; k <= STENCIL_P; k++){
                     g1[i][j]+= c[k]*g2[i][j+k];
                     g1[i][j]+= c[k]*g2[i][j-k];
                     g1[i][j]+= c[k]*g2[i+k][j];
@@ -36,7 +36,7 @@ int main(){
 
     end_time = omp_get_wtime() - start_time;
 
-    //printResults(g1);
+    printResults(g1);
 
     printf("Execution Time: %f s\n",end_time);
 
