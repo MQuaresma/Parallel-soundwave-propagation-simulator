@@ -34,7 +34,7 @@ int main( int argc, char *argv[]) {
         begin=STENCIL_P;
         for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess){
             excess = i <=remaining_rows;
-            MPI_Recv( g[begin], rows_per_proc*M_SIZE, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &status);
+            MPI_Recv( g[begin], (rows_per_proc+excess)*M_SIZE, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &status);
         }
     }else{
         rows_per_proc += excess;
