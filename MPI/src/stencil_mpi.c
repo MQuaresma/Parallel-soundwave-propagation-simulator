@@ -31,7 +31,7 @@ void fillToSend(double g[][M_SIZE], double temp[][M_SIZE], int begin, int end){
 
 int main( int argc, char *argv[]) {
     
-    int rank, no_procs, rows_per_proc, begin, end, m_size_rounded;
+    int rank, no_procs, rows_per_proc, begin, end, m_size_rounded, last_matrix=0;
     double c[5], start_time, end_time;
     static double g[M_SIZE][M_SIZE];
 
@@ -48,10 +48,10 @@ int main( int argc, char *argv[]) {
     rows_per_proc = (M_SIZE-2*STENCIL_P)/(no_procs-1);                                  //rounds by defect
     if(rank==no_procs-1){
         m_size_rounded = rows_per_proc*(no_procs-1) + 2*STENCIL_P;                      //handle cases when no_procs is not a multiple of the work load size
-        rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded - 2*STENCIL_P;          //adjust value
+        rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded;                        //adjust value
     }
     
-    double temp[rows_per_proc+2*STENCIL_P][M_SIZE];
+    double temp[2][rows_per_proc+2*STENCIL_P][M_SIZE];
 
     if (rank == 0) {
         for(int i=1; i<no_procs; i++) {
@@ -67,7 +67,7 @@ int main( int argc, char *argv[]) {
         for(int i=1; i<no_procs; i++){
             if(i==no_procs-1){
                 m_size_rounded = rows_per_proc*(no_procs-1) + 2*STENCIL_P;                      //handle cases when no_procs is not a multiple of the work load size
-                rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded - 2*STENCIL_P;          //adjust value
+                rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded;                        //adjust value
             }
             
             MPI_Recv( temp, rows_per_proc*M_SIZE, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
@@ -77,34 +77,44 @@ int main( int argc, char *argv[]) {
     }else{
         double aux[STENCIL_P][M_SIZE];
         
-        MPI_Recv( temp, (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status );
+        MPI_Recv( temp[last_matrix], (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status );
         
         for(int i = 0; i < ITERATIONS; i++){
-            //TODO: calculos
-            
+            for(int j = 0; j < rows_per_proc; j ++)
+                for(int k = STENCIL_P; k < M_SIZE-STENCIL_P-1; k++){
+                    temp[!last_matrix][i][j] = temp[last_matrix][i][j]*c[0];
+                    for(int w = 1; w <= STENCIL_P; w ++){
+                        temp[!last_matrix][i][j] += temp[last_matrix][i][j+w];
+                        temp[!last_matrix][i][j] += temp[last_matrix][i][j-w];
+                        temp[!last_matrix][i][j] += temp[last_matrix][i-w][j];
+                        temp[!last_matrix][i][j] += temp[last_matrix][i+w][j];
+                    }
+                }
+            last_matrix = !last_matrix;
+
             if(rank!=1){
-                copyFrom(aux,temp,0);
+                copyFrom(aux,temp[last_matrix],0);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_INT, rank-1, 2, MPI_COMM_WORLD);
             }
             
             if(rank!=no_procs-1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_INT, rank+1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp,rows_per_proc+STENCIL_P);
+                copyTo(aux,temp[!last_matrix],rows_per_proc+STENCIL_P);
             }   
             
             if(rank!=no_procs-1){
-                copyFrom(aux,temp,rows_per_proc+STENCIL_P);
+                copyFrom(aux,temp[last_matrix],rows_per_proc+STENCIL_P);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_INT, rank+1, 2, MPI_COMM_WORLD);
             }
             
             if(rank!=1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_INT, rank-1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp,0);
+                copyTo(aux,temp[!last_matrix],0);
             }
         }
         
         double tempToSend[rows_per_proc][M_SIZE];
-        fillToSend(temp, tempToSend, STENCIL_P, rows_per_proc);
+        fillToSend(temp[last_matrix], tempToSend, STENCIL_P, rows_per_proc);
 
         MPI_Send( tempToSend, rows_per_proc*M_SIZE, MPI_INT, 0, 1, MPI_COMM_WORLD);
     }
