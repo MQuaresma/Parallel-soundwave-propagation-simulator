@@ -61,7 +61,7 @@ int main( int argc, char *argv[]) {
 
             fillToSend(g, temp[0], begin, end);
 
-            MPI_Send(temp, (end-begin)*M_SIZE, MPI_INT, i, 0, MPI_COMM_WORLD);
+            MPI_Send(temp[0], (end-begin)*M_SIZE, MPI_INT, i, 0, MPI_COMM_WORLD);
         }
         
         for(int i=1; i<no_procs; i++){
