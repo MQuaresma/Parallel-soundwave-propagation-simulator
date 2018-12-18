@@ -2,7 +2,7 @@
 
 int main( int argc, char *argv[]) {
     
-    int rank, no_procs, rows_per_proc, remaning_rows, begin, end, last_matrix=0, work_load = M_SIZE - 2*STENCIL_P, excess;
+    int rank, no_procs, rows_per_proc, remaning_rows, begin, last_matrix=0, work_load = M_SIZE - 2*STENCIL_P, excess;
     double c[STENCIL_P+1], start_time, end_time, aux[STENCIL_P][M_SIZE];
     static double g[M_SIZE][M_SIZE];
 
@@ -23,12 +23,10 @@ int main( int argc, char *argv[]) {
     double temp[2][rows_per_proc+2*STENCIL_P+excess][M_SIZE];
 
     if (rank == 0) {
+        
         begin = 0;
-        end = rows_per_proc+2*STENCIL_P;
-
-        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end+=rows_per_proc) {
+        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess) {
             excess = i <=remaning_rows;
-            end += excess;
             copy(g, begin, temp[0], 0, rows_per_proc+excess+2*STENCIL_P);
             MPI_Send(temp[0], (rows_per_proc+2*STENCIL_P+excess)*M_SIZE, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
         }
@@ -42,7 +40,8 @@ int main( int argc, char *argv[]) {
     }else{
         rows_per_proc += excess;
         MPI_Recv( temp[last_matrix], (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status );
-        
+        copy(temp[last_matrix],0,temp[!last_matrix],0,rows_per_proc + 2*STENCIL_P);
+
         for(int i = 0; i < ITERATIONS; i++){
             for(int j = STENCIL_P; j < rows_per_proc+STENCIL_P; j ++)
                 for(int k = STENCIL_P; k < M_SIZE-STENCIL_P; k++){
@@ -87,7 +86,7 @@ int main( int argc, char *argv[]) {
     
     MPI_Finalize();
     
-    //if(rank==0) printResults(g);
+    if(rank==0) printResults(g);
 
     printf("Execution Time: %f s\n",end_time-start_time);
 
