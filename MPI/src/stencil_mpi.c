@@ -47,8 +47,8 @@ int main( int argc, char *argv[]) {
 
     rows_per_proc = (M_SIZE-2*STENCIL_P)/(no_procs-1);                                  //rounds by defect
     if(rank==no_procs-1){
-        m_size_rounded = rows_per_proc*(no_procs-1);                                    //handle cases when no_procs is not a multiple of the work load size
-        rows_per_proc = rows_per_proc + M_SIZE - 2*STENCIL_P - m_size_rounded;          //adjust value
+        m_size_rounded = rows_per_proc*(no_procs-1)+2*STENCIL_P;        //handle cases when no_procs is not a multiple of the work load size
+        rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded;        //adjust value
     }
     
     double temp[2][rows_per_proc+2*STENCIL_P][M_SIZE];
@@ -66,8 +66,8 @@ int main( int argc, char *argv[]) {
         
         for(int i=1; i<no_procs; i++){
             if(i==no_procs-1){
-                m_size_rounded = rows_per_proc*(no_procs-1);                                    //handle cases when no_procs is not a multiple of the work load size
-                rows_per_proc = rows_per_proc + M_SIZE - 2*STENCIL_P - m_size_rounded;          //adjust value
+                m_size_rounded = rows_per_proc*(no_procs-1)+2*STENCIL_P;        //handle cases when no_procs is not a multiple of the work load size
+                rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded;        //adjust value
             }
             
             MPI_Recv( temp[0], rows_per_proc*M_SIZE, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
