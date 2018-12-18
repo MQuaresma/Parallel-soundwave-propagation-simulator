@@ -92,7 +92,7 @@ int main( int argc, char *argv[]) {
 
             if(rank!=no_procs-1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_INT, rank+1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp[!last_matrix],rows_per_proc);
+                copyTo(aux,temp[!last_matrix],rows_per_proc+STENCIL_P);
             }
 
             if(rank!=no_procs-1){
@@ -102,7 +102,7 @@ int main( int argc, char *argv[]) {
 
             if(rank!=1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_INT, rank-1, 2, MPI_COMM_WORLD, &status );
-                copyTo(aux,temp[!last_matrix],STENCIL_P);
+                copyTo(aux,temp[!last_matrix],0);
             }
         }
         
@@ -116,7 +116,7 @@ int main( int argc, char *argv[]) {
     
     MPI_Finalize();
     
-    //if(rank==0) printResults(g);
+    if(rank==0) printResults(g);
 
     printf("Execution Time: %f s\n",end_time-start_time);
 
