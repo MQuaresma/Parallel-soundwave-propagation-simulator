@@ -55,7 +55,7 @@ int main( int argc, char *argv[]) {
         begin = 0;
         end = rows_per_proc+2*STENCIL_P;
 
-        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end+=rows_per_proc+excess) {
+        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end+=rows_per_proc) {
             excess = i <=remaning_rows;
             end += excess;
             fillToSend(g, temp[0], begin, end);
