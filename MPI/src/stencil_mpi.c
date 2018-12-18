@@ -32,7 +32,7 @@ void fillToSend(double g[][M_SIZE], double temp[][M_SIZE], int begin, int end){
 int main( int argc, char *argv[]) {
     
     int rank, no_procs, rows_per_proc, begin, end, m_size_rounded, last_matrix=0;
-    double c[5], start_time, end_time;
+    double c[STENCIL_P+1], start_time, end_time, aux[STENCIL_P][M_SIZE];
     static double g[M_SIZE][M_SIZE];
 
     initiateMask(c);
@@ -59,7 +59,7 @@ int main( int argc, char *argv[]) {
             if(i!=no_procs-1) end = (i+1)*rows_per_proc + STENCIL_P;
             else end = M_SIZE;
 
-            fillToSend(g, temp, begin, end);
+            fillToSend(g, temp[0], begin, end);
 
             MPI_Send(temp, (end-begin)*M_SIZE, MPI_INT, i, 0, MPI_COMM_WORLD);
         }
@@ -70,24 +70,22 @@ int main( int argc, char *argv[]) {
                 rows_per_proc = rows_per_proc + M_SIZE - m_size_rounded;                        //adjust value
             }
             
-            MPI_Recv( temp, rows_per_proc*M_SIZE, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
-            if(i==no_procs-1) copy(temp,g,rows_per_proc,M_SIZE-rows_per_proc-1);
-            else copy(temp,g,rows_per_proc,i*rows_per_proc);
+            MPI_Recv( temp[0], rows_per_proc*M_SIZE, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
+            if(i==no_procs-1) copy(temp[0],g,rows_per_proc,M_SIZE-rows_per_proc-1);
+            else copy(temp[0],g,rows_per_proc,i*rows_per_proc);
         }
     }else{
-        double aux[STENCIL_P][M_SIZE];
-        
         MPI_Recv( temp[last_matrix], (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status );
         
         for(int i = 0; i < ITERATIONS; i++){
-            for(int j = 0; j < rows_per_proc; j ++)
+            for(int j = STENCIL_P; j < rows_per_proc-STENCIL_P; j ++)
                 for(int k = STENCIL_P; k < M_SIZE-STENCIL_P-1; k++){
-                    temp[!last_matrix][i][j] = temp[last_matrix][i][j]*c[0];
+                    temp[!last_matrix][j][k] = temp[last_matrix][j][k]*c[0];
                     for(int w = 1; w <= STENCIL_P; w ++){
-                        temp[!last_matrix][i][j] += temp[last_matrix][i][j+w];
-                        temp[!last_matrix][i][j] += temp[last_matrix][i][j-w];
-                        temp[!last_matrix][i][j] += temp[last_matrix][i-w][j];
-                        temp[!last_matrix][i][j] += temp[last_matrix][i+w][j];
+                        temp[!last_matrix][j][k] += temp[last_matrix][j][k+w]*c[w];
+                        temp[!last_matrix][j][k] += temp[last_matrix][j][k-w]*c[w];
+                        temp[!last_matrix][j][k] += temp[last_matrix][j-w][k]*c[w];
+                        temp[!last_matrix][j][k] += temp[last_matrix][j+w][k]*c[w];
                     }
                 }
             last_matrix = !last_matrix;
