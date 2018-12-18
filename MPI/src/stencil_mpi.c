@@ -55,7 +55,7 @@ int main( int argc, char *argv[]) {
         begin = 0;
         end = rows_per_proc+2*STENCIL_P;
 
-        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end+=rows_per_proc+excess) {
+        for(int i=1; i<no_procs; i++, begin+=rows_per_proc+excess, end+=rows_per_proc) {
             excess = i <=remaning_rows;
             end += excess;
             fillToSend(g, temp[0], begin, end);
@@ -88,23 +88,19 @@ int main( int argc, char *argv[]) {
             if(rank!=1){
                 copyFrom(aux,temp[last_matrix],STENCIL_P);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
-                //MPI_Send( temp[last_matrix][STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
             }
 
             if(rank!=no_procs-1){
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
-                //MPI_Recv( temp[!last_matrix][rows_per_proc+STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
                 copyTo(aux,temp[last_matrix],rows_per_proc+STENCIL_P);
             }
 
             if(rank!=no_procs-1){
                 copyFrom(aux,temp[last_matrix],rows_per_proc);
-                //MPI_Send( temp[last_matrix][rows_per_proc], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
                 MPI_Send( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
             }
 
             if(rank!=1){
-                //MPI_Recv( temp[!last_matrix], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
                 MPI_Recv( aux, STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
                 copyTo(aux,temp[last_matrix],0);
             }
@@ -113,7 +109,7 @@ int main( int argc, char *argv[]) {
         double tempToSend[rows_per_proc][M_SIZE];
         fillToSend(temp[last_matrix], tempToSend, STENCIL_P, rows_per_proc);
 
-        MPI_Send( tempToSend, rows_per_proc*M_SIZE, MPI_INT, 0, 1, MPI_COMM_WORLD);
+        MPI_Send( tempToSend, rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
     }
 
     end_time = MPI_Wtime();
