@@ -67,9 +67,9 @@ int main( int argc, char *argv[]) {
                     MPI_Send( &(temp[last_matrix][rows_per_proc*M_SIZE]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
 
                 if(rank!=1)
-                    MPI_Recv( &(temp[last_matrix]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
+                    MPI_Recv( temp[last_matrix], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
             }
-            MPI_Send( &(temp[last_matrix][STENCIL_P]), rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
+            MPI_Send( &(temp[last_matrix][STENCIL_P*M_SIZE]), rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
         }
 
         delete [] temp[0];
