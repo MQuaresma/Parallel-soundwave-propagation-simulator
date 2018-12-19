@@ -25,5 +25,5 @@ void printResults(double m[M_SIZE][M_SIZE]){
 void copy(double *temp, int orig_offset, double *g, int dest_offset, int rows){
     for(int i=0; i<rows; i++)
         for(int j=0; j<M_SIZE; j++)
-            g[(i+dest_offset)*M_SIZE+j] = temp[(i+orig_offset)*M_SIZE+j];
+            *(g+(i+dest_offset)*M_SIZE+j) = *(temp+(i+orig_offset)*M_SIZE+j);
 }

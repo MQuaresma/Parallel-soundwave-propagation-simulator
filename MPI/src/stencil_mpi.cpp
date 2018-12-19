@@ -41,7 +41,7 @@ int main( int argc, char *argv[]) {
             }
         }else{
             rows_per_proc += excess;
-            MPI_Recv( temp, (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status );
+            MPI_Recv( temp[last_matrix], (rows_per_proc + 2*STENCIL_P)*M_SIZE, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status );
             copy(temp[last_matrix],0,temp[!last_matrix],0,rows_per_proc + 2*STENCIL_P);
 
             for(int i = 0; i < ITERATIONS; i++){
@@ -58,13 +58,13 @@ int main( int argc, char *argv[]) {
 
                 last_matrix = !last_matrix;
                 if(rank!=1)
-                    MPI_Send( &(temp[last_matrix][STENCIL_P]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
+                    MPI_Send( &(temp[last_matrix][STENCIL_P*M_SIZE]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
 
                 if(rank!=no_procs-1)
-                    MPI_Recv( &(temp[last_matrix][rows_per_proc+STENCIL_P]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
+                    MPI_Recv( &(temp[last_matrix][(rows_per_proc+STENCIL_P)*M_SIZE]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
 
                 if(rank!=no_procs-1)
-                    MPI_Send( &(temp[last_matrix][rows_per_proc]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
+                    MPI_Send( &(temp[last_matrix][rows_per_proc*M_SIZE]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
 
                 if(rank!=1)
                     MPI_Recv( &(temp[last_matrix]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
