@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #PBS -N Teste
-#PBS -l walltime=10:00
+#PBS -l walltime=20:00
 #PBS -l nodes=2:r641:ppn=32
 #PBS -q mei
 
@@ -16,32 +16,35 @@ make
 
 mkdir times
 
-OMP_NUM_THREADS=3
-while [ $OMP_NUM_THREADS -lt 66 ]; do
+OMP_NUM_THREADS=2
+while [ $OMP_NUM_THREADS -lt 65 ]; do
     NUM=0
+    echo $OMP_NUM_THREADS 
 	while [ $NUM -lt 15 ]; do
-		mpirun -bycore --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res.txt
+		mpirun --map-by core --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res_core.txt
         let NUM=NUM+1
     done
-    let OMP_NUM_THREADS="(($OMP_NUM_THREADS-1)*2)+1"
+    let OMP_NUM_THREADS=$OMP_NUM_THREADS*2
 done
 
-OMP_NUM_THREADS=3
-while [ $OMP_NUM_THREADS -lt 66 ]; do
+OMP_NUM_THREADS=2
+while [ $OMP_NUM_THREADS -lt 65 ]; do
     NUM=0
+    echo $OMP_NUM_THREADS
 	while [ $NUM -lt 15 ]; do
-		mpirun -bynode --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res.txt
+		mpirun --map-by node --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res_node.txt
         let NUM=NUM+1
     done
-    let OMP_NUM_THREADS="(($OMP_NUM_THREADS-1)*2)+1"
+    let OMP_NUM_THREADS=$OMP_NUM_THREADS*2
 done
 
-OMP_NUM_THREADS=3
-while [ $OMP_NUM_THREADS -lt 66 ]; do
+OMP_NUM_THREADS=2
+while [ $OMP_NUM_THREADS -lt 65 ]; do
     NUM=0
+    echo $OMP_NUM_THREADS
 	while [ $NUM -lt 15 ]; do
-		mpirun -byslot --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res.txt
+		mpirun --map-by slot --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res_slot.txt
         let NUM=NUM+1
     done
-    let OMP_NUM_THREADS="(($OMP_NUM_THREADS-1)*2)+1"
+    let OMP_NUM_THREADS=$OMP_NUM_THREADS*2
 done

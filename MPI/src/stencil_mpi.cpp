@@ -1,5 +1,4 @@
-#include<stdlib.h>
-#include "matrix_utils.h"
+#include "matrix_utils.hpp"
 
 int main( int argc, char *argv[]) {
     
@@ -22,7 +21,14 @@ int main( int argc, char *argv[]) {
     excess = rank <= remaining_rows;
 
     if(rows_per_proc >= STENCIL_P){                 //ensure that each process gets at least 4 rows i.e stencil size
-        double temp[2][rows_per_proc+2*STENCIL_P+excess][M_SIZE];
+        //double temp[2][rows_per_proc+2*STENCIL_P+excess][M_SIZE];
+        double*** temp = new double**[2];
+        temp[0] = new double*[rows_per_proc+2*STENCIL_P+excess];
+        temp[1] = new double*[rows_per_proc+2*STENCIL_P+excess];
+        for(int i=0; i<rows_per_proc+2*STENCIL_P+excess; i++){
+            temp[0][i] = new double[M_SIZE];
+            temp[1][i] = new double[M_SIZE];
+        }
 
         if (rank == 0) {
             
