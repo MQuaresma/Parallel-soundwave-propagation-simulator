@@ -73,9 +73,9 @@ int main( int argc, char *argv[]) {
     
     MPI_Finalize();
     
-    if(rank==0) printResults(g);
+    //if(rank==0) printResults(g);
 
-    //printf("Execution Time: %f s\n",end_time-start_time);
+    if(rank==0) printf("Execution Time: %f s\n",end_time-start_time);
 
     return 0;
 }
