@@ -22,13 +22,9 @@ int main( int argc, char *argv[]) {
 
     if(rows_per_proc >= STENCIL_P){                 //ensure that each process gets at least 4 rows i.e stencil size
         //double temp[2][rows_per_proc+2*STENCIL_P+excess][M_SIZE];
-        double*** temp = new double**[2];
-        temp[0] = new double*[rows_per_proc+2*STENCIL_P+excess];
-        temp[1] = new double*[rows_per_proc+2*STENCIL_P+excess];
-        for(int i=0; i<rows_per_proc+2*STENCIL_P+excess; i++){
-            temp[0][i] = new double[M_SIZE];
-            temp[1][i] = new double[M_SIZE];
-        }
+        double** temp = new double*[2];
+        temp[0] = new double[(rows_per_proc+2*STENCIL_P+excess)*M_SIZE];
+        temp[1] = new double[(rows_per_proc+2*STENCIL_P+excess)*M_SIZE];
 
         if (rank == 0) {
             
@@ -51,30 +47,35 @@ int main( int argc, char *argv[]) {
             for(int i = 0; i < ITERATIONS; i++){
                 for(int j = STENCIL_P; j < rows_per_proc+STENCIL_P; j ++)
                     for(int k = STENCIL_P; k < M_SIZE-STENCIL_P; k++){
-                        temp[!last_matrix][j][k] = temp[last_matrix][j][k]*c[0];
+                        temp[!last_matrix][j*M_SIZE+k] = temp[last_matrix][j*M_SIZE+k]*c[0];
                         for(int w = 1; w <= STENCIL_P; w ++){
-                            temp[!last_matrix][j][k] += c[w]*temp[last_matrix][j][k+w];
-                            temp[!last_matrix][j][k] += c[w]*temp[last_matrix][j][k-w];
-                            temp[!last_matrix][j][k] += c[w]*temp[last_matrix][j+w][k];
-                            temp[!last_matrix][j][k] += c[w]*temp[last_matrix][j-w][k];
+                            temp[!last_matrix][j*M_SIZE+k] += c[w]*temp[last_matrix][j*M_SIZE+k+w];
+                            temp[!last_matrix][j*M_SIZE+k] += c[w]*temp[last_matrix][j*M_SIZE+k-w];
+                            temp[!last_matrix][j*M_SIZE+k] += c[w]*temp[last_matrix][(j+w)*M_SIZE+k];
+                            temp[!last_matrix][j*M_SIZE+k] += c[w]*temp[last_matrix][(j-w)*M_SIZE+k];
                         }
                     }
 
                 last_matrix = !last_matrix;
                 if(rank!=1)
-                    MPI_Send( temp[last_matrix][STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
+                    MPI_Send( &temp[last_matrix][STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
 
                 if(rank!=no_procs-1)
-                    MPI_Recv( temp[last_matrix][rows_per_proc+STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
+                    MPI_Recv( &temp[last_matrix][rows_per_proc+STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
 
                 if(rank!=no_procs-1)
-                    MPI_Send( temp[last_matrix][rows_per_proc], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
+                    MPI_Send( &temp[last_matrix][rows_per_proc], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
 
                 if(rank!=1)
-                    MPI_Recv( temp[last_matrix], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
+                    MPI_Recv( &temp[last_matrix], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
             }
-            MPI_Send( temp[last_matrix][STENCIL_P], rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
+            MPI_Send( &temp[last_matrix][STENCIL_P], rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
         }
+
+        delete [] temp[0];
+        delete [] temp[1];
+        delete [] temp;
+
     }else
         if(!rank) fprintf(stderr, "%s: Make sure the number of processes is at least 1/4(0.25) of the work load\n", argv[0]);
 
