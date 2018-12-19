@@ -58,18 +58,18 @@ int main( int argc, char *argv[]) {
 
                 last_matrix = !last_matrix;
                 if(rank!=1)
-                    MPI_Send( &temp[last_matrix][STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
+                    MPI_Send( &(temp[last_matrix][STENCIL_P]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD);
 
                 if(rank!=no_procs-1)
-                    MPI_Recv( &temp[last_matrix][rows_per_proc+STENCIL_P], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
+                    MPI_Recv( &(temp[last_matrix][rows_per_proc+STENCIL_P]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD, &status );
 
                 if(rank!=no_procs-1)
-                    MPI_Send( &temp[last_matrix][rows_per_proc], STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
+                    MPI_Send( &(temp[last_matrix][rows_per_proc]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank+1, 2, MPI_COMM_WORLD);
 
                 if(rank!=1)
-                    MPI_Recv( &temp[last_matrix], STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
+                    MPI_Recv( &(temp[last_matrix]), STENCIL_P*M_SIZE, MPI_DOUBLE, rank-1, 2, MPI_COMM_WORLD, &status );
             }
-            MPI_Send( &temp[last_matrix][STENCIL_P], rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
+            MPI_Send( &(temp[last_matrix][STENCIL_P]), rows_per_proc*M_SIZE, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
         }
 
         delete [] temp[0];
