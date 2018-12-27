@@ -48,7 +48,7 @@ double latency_test(MPI_Status status, int rank){
         avg_time = MPI_Wtime() - avg_time;
 
     avg_time = avg_time/SAMPLE_SIZE*1.0e6;
-    return avg_time;
+    return avg_time/2;                          // half round trip
 }
 
 double bandwitdh_test(double latency, MPI_Status status, int rank){
