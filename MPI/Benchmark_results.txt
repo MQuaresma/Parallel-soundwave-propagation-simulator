@@ -1,30 +1,45 @@
-Average Latency: 123.06110803 us 
-Average BW:   0.10316778 us/byte
-Average Latency: 123.06585982 us 
-Average BW:   0.10001731 us/byte
-Average Latency: 123.04676734 us 
-Average BW:   0.09701765 us/byte
-Average Latency: 123.12440779 us 
-Average BW:   0.10116852 us/byte
-Average Latency: 123.04066811 us 
-Average BW:   0.09590731 us/byte
-Average Latency: 123.06400482 us 
-Average BW:   0.10572988 us/byte
-Average Latency: 123.03176746 us 
-Average BW:   0.09625511 us/byte
-Average Latency: 123.09022453 us 
-Average BW:   0.09883951 us/byte
-Average Latency: 123.08108155 us 
-Average BW:   0.09871703 us/byte
-Average Latency: 123.04909453 us 
-Average BW:   0.09619495 us/byte
-Average Latency: 123.11745994 us 
-Average BW:   0.10562729 us/byte
-Average Latency: 123.06035981 us 
-Average BW:   0.09647107 us/byte
-Average Latency: 123.06396943 us 
-Average BW:   0.09447462 us/byte
-Average Latency: 123.03966824 us 
-Average BW:   0.09897024 us/byte
-Average Latency: 123.07662591 us 
-Average BW:   0.09755114 us/byte
+ts: 122.49790318 us 
+1/tw:   0.08476721 us/byte
+tc:   0.00142400 us/op
+ts: 122.51040544 us 
+1/tw:   0.08621396 us/byte
+tc:   0.00169685 us/op
+ts: 122.51680549 us 
+1/tw:   0.09178173 us/byte
+tc:   0.00157488 us/op
+ts: 122.49155715 us 
+1/tw:   0.08557402 us/byte
+tc:   0.00138798 us/op
+ts: 122.55633138 us 
+1/tw:   0.08912277 us/byte
+tc:   0.00171948 us/op
+ts: 122.55339921 us 
+1/tw:   0.09007142 us/byte
+tc:   0.00129752 us/op
+ts: 122.53983803 us 
+1/tw:   0.08654807 us/byte
+tc:   0.00141822 us/op
+ts: 122.56871667 us 
+1/tw:   0.08487468 us/byte
+tc:   0.00129112 us/op
+ts: 122.49543443 us 
+1/tw:   0.08562718 us/byte
+tc:   0.00123412 us/op
+ts: 122.49733806 us 
+1/tw:   0.08493079 us/byte
+tc:   0.00142486 us/op
+ts: 122.49171808 us 
+1/tw:   0.08662537 us/byte
+tc:   0.00169481 us/op
+ts: 122.50521742 us 
+1/tw:   0.08583391 us/byte
+tc:   0.00120555 us/op
+ts: 122.51509558 us 
+1/tw:   0.08657021 us/byte
+tc:   0.00141907 us/op
+ts: 122.51167968 us 
+1/tw:   0.08652600 us/byte
+tc:   0.00140369 us/op
+ts: 122.48991933 us 
+1/tw:   0.08449836 us/byte
+tc:   0.00143023 us/op
