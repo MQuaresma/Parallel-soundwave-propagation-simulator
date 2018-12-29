@@ -109,5 +109,6 @@ int main(int argc, char *argv[]){
     if(!rank){
         printf("ts: %12.8f us \n", ts); 
         printf("1/tw: %12.8f us/byte\n", tw); 
+        printf("tc: %12.8f us/op\n", tc); 
     }
 }
