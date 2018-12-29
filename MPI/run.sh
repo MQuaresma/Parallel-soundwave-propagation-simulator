@@ -19,7 +19,6 @@ mkdir times
 OMP_NUM_THREADS=2
 while [ $OMP_NUM_THREADS -lt 65 ]; do
     NUM=0
-    echo $OMP_NUM_THREADS 
 	while [ $NUM -lt 15 ]; do
 		mpirun --map-by core --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res_core.txt
         let NUM=NUM+1
@@ -30,7 +29,6 @@ done
 OMP_NUM_THREADS=2
 while [ $OMP_NUM_THREADS -lt 65 ]; do
     NUM=0
-    echo $OMP_NUM_THREADS
 	while [ $NUM -lt 15 ]; do
 		mpirun --map-by node --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res_node.txt
         let NUM=NUM+1
@@ -41,7 +39,6 @@ done
 OMP_NUM_THREADS=2
 while [ $OMP_NUM_THREADS -lt 65 ]; do
     NUM=0
-    echo $OMP_NUM_THREADS
 	while [ $NUM -lt 15 ]; do
 		mpirun --map-by slot --oversubscribe -np $OMP_NUM_THREADS -mca btl self,vader,tcp bin/a.out >> times/mpi_res_slot.txt
         let NUM=NUM+1

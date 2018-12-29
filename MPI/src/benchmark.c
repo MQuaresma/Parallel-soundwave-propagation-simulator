@@ -29,7 +29,7 @@ int main(int argc, char *argv[]){
 
 
 double latency_test(MPI_Status status, int rank){
-    double avg_time = 0.f, delta;
+    double avg_time = 0.f;
 
     MPI_Barrier(MPI_COMM_WORLD);
     
@@ -54,7 +54,7 @@ double latency_test(MPI_Status status, int rank){
 }
 
 double throughput_test(double latency, MPI_Status status, int rank){
-    double avg_time = 0.f, delta;
+    double avg_time = 0.f;
     double *vec = (double*)calloc(VEC_SIZE, sizeof(double));
     
     MPI_Barrier(MPI_COMM_WORLD);
@@ -75,7 +75,7 @@ double throughput_test(double latency, MPI_Status status, int rank){
 
     if(!rank)
         avg_time = MPI_Wtime() - avg_time;
-    avg_time = avg_time/SAMPLE_SIZE*1.0e6-latency;
+    avg_time = avg_time/SAMPLE_SIZE*1.0e6-2*latency;
 
     return avg_time/(2*VEC_SIZE*sizeof(double));
 }
