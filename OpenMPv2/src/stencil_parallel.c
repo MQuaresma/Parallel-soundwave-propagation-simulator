@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <omp.h>
 #include <inttypes.h>
 #include "matrix_utils.h"

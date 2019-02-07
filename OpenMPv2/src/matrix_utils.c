@@ -1,4 +1,3 @@
-#include<stdio.h>
 #include "matrix_utils.h"
 
 void initiateMask(double *C){
