@@ -9,3 +9,9 @@
 ## macOS
 **/._*
 **/.DS_Store
+
+
+## Latex
+**/*.log
+**/*.aux
+**/*.toc
